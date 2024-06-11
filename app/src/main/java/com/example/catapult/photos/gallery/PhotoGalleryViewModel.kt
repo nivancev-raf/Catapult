@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catapult.navigation.albumId
+import com.example.catapult.photos.albums.model.AlbumUiModel
+import com.example.catapult.photos.db.Album
 import com.example.catapult.photos.repository.PhotosRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,28 +26,27 @@ class PhotoGalleryViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(AlbumGalleryUiState())
     val state = _state.asStateFlow()
+
     private fun setState(reducer: AlbumGalleryUiState.() -> AlbumGalleryUiState) =
         _state.update(reducer)
 
     init {
-//        observeAlbums()
+        observeAlbumPhotos()
     }
 
-//    private fun observeAlbums() {
-//        viewModelScope.launch {
-//            photoRepository.observeAlbumPhotos(albumId = albumId)
-//                .distinctUntilChanged()
-//                .collect {
-//                    setState { copy(photos = it.map { it.asPhotoUiModel() }) }
-//                }
-//        }
-//    }
-//
-//    // maper koji konvertuje Photo u PhotoUiModel
-//    private fun Photo.asPhotoUiModel() = PhotoUiModel(
-//        photoId = photoId,
-//        url = url,
-//        albumId = albumId,
-//
-//    )
+    private fun observeAlbumPhotos() {
+        viewModelScope.launch {
+            photoRepository.observeAlbumPhotos(albumId = albumId)
+                .distinctUntilChanged()
+                .collect { photos ->
+                    setState { copy(photos = photos.map { it.asAlbumUiModel() }) }
+                }
+        }
+    }
+
+    private fun Album.asAlbumUiModel() = AlbumUiModel(
+        id = albumId,
+        breedOwnerId = breedOwnerId,
+        coverPhotoUrl = imageUrl
+    )
 }

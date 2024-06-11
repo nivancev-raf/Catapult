@@ -6,7 +6,6 @@ import com.example.catapult.photos.albums.model.AlbumUiModel
 import com.example.catapult.photos.api.PhotosApi
 import com.example.catapult.photos.db.Album
 import com.example.catapult.photos.mappers.asAlbumDbModel
-import com.example.catapult.photos.mappers.asAlbumUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -23,7 +22,7 @@ class PhotosRepository @Inject constructor(
             .map { it.asAlbumDbModel(breedId = breedId) }
             .toMutableList()
 
-        // Updating coverUrl for each album
+//         Updating coverUrl for each album
 //        allAlbums.forEachIndexed { index, album ->
 //            val albumPhotos = photosApi.getAlbumPhotos(albumId = album.albumId)
 //            album.imageUrl = albumPhotos.firstOrNull()?.url
@@ -44,6 +43,10 @@ class PhotosRepository @Inject constructor(
 //        return database.albumDao().observeAlbumPhotos(albumId = albumId)
 //            .map { it.map { album -> album.asAlbumDbModel() } }
 //    }
+
+    fun observeAlbumPhotos(albumId: String): Flow<List<Album>> {
+        return database.albumDao().observeAlbumPhotos(albumId = albumId)
+    }
 
 
 //    suspend fun deleteAlbum(albumId: Int) {

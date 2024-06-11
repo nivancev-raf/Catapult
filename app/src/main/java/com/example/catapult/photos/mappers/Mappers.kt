@@ -15,7 +15,7 @@ fun AlbumApiModel.asAlbumDbModel(breedId: String): Album {
 }
 
 fun Album.asAlbumUiModel() = AlbumUiModel(
-    id = this.albumId,
-    coverPhotoUrl = this.imageUrl
+    id = albumId,
+    breedOwnerId = breedOwnerId,
+    coverPhotoUrl = imageUrl
 )
-
