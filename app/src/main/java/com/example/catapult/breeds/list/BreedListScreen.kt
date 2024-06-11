@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -30,8 +31,7 @@ fun NavGraphBuilder.cats(
 ) = composable(
     route = route
 ) {
-    val breedListViewModel = viewModel<BreedListViewModel>() // funkcija viewModel je deo compose-a
-
+    val breedListViewModel = hiltViewModel<BreedListViewModel>() // funkcija viewModel je deo compose-a
     val state = breedListViewModel.state.collectAsState() // vraca poslednji state koji je emitovan
 
     BreedListScreen(

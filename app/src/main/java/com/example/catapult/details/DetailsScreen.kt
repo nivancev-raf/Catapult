@@ -34,13 +34,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil.compose.rememberImagePainter
-import rs.edu.raf.rma6.photos.albums.DetailsViewModel
 import com.example.catapult.details.DetailsContract.DetailsUiState
 import com.example.catapult.details.model.DetailsUiModel
 import com.example.catapult.details.model.PhotoUiModel
@@ -49,29 +50,33 @@ import com.example.catapult.ui.composables.NoDataContent
 
 fun NavGraphBuilder.breedDetails(
     route: String,
+    arguments: List<NamedNavArgument>,
+    onImageBreedClick: (String) -> Unit,
     onClose: () -> Unit,
 ) = composable(
     route = route,
+    arguments = arguments,
 ) { navBackStackEntry ->
-    val breedId = navBackStackEntry.arguments?.getString("Id") // u breedId smestamo string 'ID'
-        ?: throw IllegalStateException("breedId required")
 
-    // this code snippet is used to create a ViewModel
-    // that requires a constructor parameter (in this case, userId).
-    val detailsViewModel = viewModel<DetailsViewModel>(
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return DetailsViewModel(breedId = breedId) as T
-            }
-        }
-    )
+    val breedDetailViewModel: DetailsViewModel = hiltViewModel(navBackStackEntry)
 
-    val state = detailsViewModel.state.collectAsState()
+
+//    val detailsViewModel = viewModel<DetailsViewModel>(
+//        factory = object : ViewModelProvider.Factory {
+//            @Suppress("UNCHECKED_CAST")
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                return DetailsViewModel(breedId = breedId) as T
+//            }
+//        }
+//    )
+
+    val state = breedDetailViewModel.state.collectAsState()
+
 
     DetailsScreen(
         state = state.value,
         onClose = onClose,
+        onImageBreedClick = onImageBreedClick,
     )
 
 }
@@ -81,6 +86,7 @@ fun NavGraphBuilder.breedDetails(
 fun DetailsScreen(
     state: DetailsUiState,
     onClose: () -> Unit,
+    onImageBreedClick: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -130,6 +136,7 @@ fun DetailsScreen(
                     DataColumn(
                         data = state.data,
                         image = state.image,
+                        onImageBreedClick = onImageBreedClick,
                     )
                 } else {
                     // nema podataka
@@ -145,6 +152,7 @@ fun DetailsScreen(
 private fun DataColumn(
     data: DetailsUiModel,
     image: PhotoUiModel,
+    onImageBreedClick: (String) -> Unit,
 ) {
     Column (
         modifier = Modifier.verticalScroll(rememberScrollState())
@@ -165,6 +173,20 @@ private fun DataColumn(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        // add button fore more images
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Button(
+                onClick = { onImageBreedClick(data.id) },
+            ) {
+                Icon(Icons.Filled.Info, contentDescription = "Info")
+                Text("View more images of this breed")
+            }
+        }
 
         // opis
         Text(

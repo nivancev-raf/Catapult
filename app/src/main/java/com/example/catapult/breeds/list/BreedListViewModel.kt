@@ -15,9 +15,14 @@ import kotlinx.coroutines.withContext
 import com.example.catapult.breeds.list.BreedListContract.BreedListState
 import com.example.catapult.breeds.list.BreedListContract.BreedListUiEvent
 import com.example.catapult.breeds.list.model.BreedUiModel
+import com.example.catapult.breeds.mappers.asBreedUiModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import javax.inject.Inject
 
-class BreedListViewModel(
-    private val repository: BreedsRepository = BreedsRepository,
+@HiltViewModel
+class BreedListViewModel @Inject constructor(
+    private val repository: BreedsRepository,
 ) : ViewModel() { // nasledjujemo ViewModel
 
     private val _state = MutableStateFlow(BreedListState()) // holds the current state of the UI
@@ -37,6 +42,7 @@ class BreedListViewModel(
     init {
         observeEvents()
         fetchAllBreeds()
+        observeBreeds()
     }
 
     // collect - funkcija koja se koristi za prikupljanje vrednosti iz flow-a
@@ -55,6 +61,22 @@ class BreedListViewModel(
         }
     }
 
+    private fun observeBreeds() {
+        viewModelScope.launch {
+            setState { copy(loading = true) }
+            repository.observeAllBreeds()
+                .distinctUntilChanged() // vidljivo samo ako se vrednost promeni
+                .collect {
+                    setState {
+                        copy(
+                            loading = false,
+                            breeds = it.map { it.asBreedUiModel() }
+                        )
+                    }
+                }
+        }
+    }
+
 
     private fun filterBreedList(query: String) {
         val filteredBreeds = _state.value.breeds.filter { breed ->
@@ -68,10 +90,9 @@ class BreedListViewModel(
         viewModelScope.launch {
             setState { copy(loading = true) }
             try {
-                val breeds = withContext(Dispatchers.IO) {
-                    repository.fetchAllBreeds().map { it.asBreedUiModel() }
+                withContext(Dispatchers.IO) {
+                    repository.fetchAllBreeds()
                 }
-                setState { copy(breeds = breeds) }
             } catch (error: Exception) {
                 // TODO Handle error
                 setState { copy(error = BreedListContract.ListError.ListUpdateFailed(error))}
@@ -84,11 +105,11 @@ class BreedListViewModel(
 
 
     // mapper
-    private fun BreedApiModel.asBreedUiModel() = BreedUiModel(
-        id = this.id,
-        name = this.name,
-        alternativeNames = this.alt_names,
-        description = this.description,
-        temperaments = this.temperament,
-    )
+//    private fun BreedApiModel.asBreedUiModel() = BreedUiModel(
+//        id = this.id,
+//        name = this.name,
+//        alternativeNames = this.alt_names,
+//        description = this.description,
+//        temperaments = this.temperament,
+//    )
 }

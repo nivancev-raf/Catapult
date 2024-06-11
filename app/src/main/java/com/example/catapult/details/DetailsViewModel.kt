@@ -1,5 +1,7 @@
-package rs.edu.raf.rma6.photos.albums
+package com.example.catapult.details
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catapult.breeds.api.model.BreedApiModel
@@ -14,12 +16,19 @@ import com.example.catapult.details.DetailsContract.DetailsUiState
 import com.example.catapult.details.api.model.PhotoApiModel
 import com.example.catapult.details.model.DetailsUiModel
 import com.example.catapult.details.model.PhotoUiModel
+import com.example.catapult.navigation.breeds_id
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.getAndUpdate
+import javax.inject.Inject
 
-class DetailsViewModel(
-    private val breedId: String,
-    private val breedRepository: BreedsRepository = BreedsRepository,
+@HiltViewModel
+class DetailsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val breedRepository: BreedsRepository,
 ) : ViewModel() {
+
+    private val breedId: String = savedStateHandle.breeds_id
+
 
     private val _state = MutableStateFlow(DetailsUiState(breedId = breedId, image = PhotoUiModel("", "")))
     val state = _state.asStateFlow()
@@ -29,6 +38,7 @@ class DetailsViewModel(
 
     init {
         fetchDetailsById()
+        Log.d("BreedId", breedId)
     }
 
 
@@ -91,7 +101,7 @@ class DetailsViewModel(
 
     // mapper
     private fun PhotoApiModel.asBreedImageUiModel() = PhotoUiModel(
-        id = this.id,
+        photoId = this.id,
         url = this.url,
 //        width = this.width,
 //        height = this.height
