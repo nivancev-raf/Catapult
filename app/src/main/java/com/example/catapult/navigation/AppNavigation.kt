@@ -23,6 +23,21 @@ fun AppNavigation() {
             route = "breeds",
             onBreedClick = {
                 navController.navigate(route = "breeds/$it")
+            },
+            onProfileClick = {
+                // Implement the action when profile is clicked
+                // For example, navigate to the profile screen
+                navController.navigate(route = "profile")
+            },
+            onBreedsClick = {
+                // Implement the action when breeds is clicked
+                // For example, navigate to the breeds list screen
+                navController.navigate(route = "breeds")
+            },
+            onQuizClick = {
+                // Implement the action when quiz is clicked
+                // For example, navigate to the quiz screen
+                navController.navigate(route = "quiz")
             }
         )
 
