@@ -110,7 +110,8 @@ fun AlbumGridScreen(
                                 modifier = Modifier
                                     .size(cellSize)
                                     .clickable {
-                                        onAlbumClick(album.id)
+//                                        onAlbumClick(album.id)
+                                        onAlbumClick(album.breedOwnerId)
                                     },
                             ) {
                                 PhotoPreview(

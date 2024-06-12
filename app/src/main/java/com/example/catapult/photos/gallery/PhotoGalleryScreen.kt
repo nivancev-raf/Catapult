@@ -1,5 +1,6 @@
 package com.example.catapult.photos.gallery
 
+import android.util.Log
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -16,10 +17,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -29,6 +26,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.catapult.photos.albums.grid.AlbumGridContract
+import com.example.catapult.photos.albums.grid.AlbumGridViewModel
 import com.example.catapult.ui.composables.AppIconButton
 import com.example.catapult.ui.composables.PhotoPreview
 
@@ -45,27 +44,19 @@ fun NavGraphBuilder.photoGallery(
 ) { navBackStackEntry ->
 
     val photoGalleryViewModel = hiltViewModel<PhotoGalleryViewModel>(navBackStackEntry)
-
-//    val userId = navBackStackEntry.arguments?.getInt("userId")
-//        ?: throw IllegalStateException("userId required")
-//
-//    val albumGalleryViewModel = viewModel<AlbumGalleryViewModel>(
-//        factory = object : ViewModelProvider.Factory {
-//            @Suppress("UNCHECKED_CAST")
-//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//                return AlbumGalleryViewModel(userId = userId) as T
-//            }
-//        }
-//    )
-
     val state = photoGalleryViewModel.state.collectAsState()
+
+    // get album id from arguments
+
+
+
+
 
     PhotoGalleryScreen(
         state = state.value,
         onClose = onClose,
     )
 }
-
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -101,37 +92,28 @@ fun PhotoGalleryScreen(
         },
         content = { paddingValues ->
             if (state.photos.isNotEmpty()) {
-
-
-                // this is a hack to get the title to update when the page changes
-//                LaunchedEffect(pagerState) {
-//                    snapshotFlow { pagerState.currentPage }.collect { pageIndex ->
-//                        val album = state.photos.getOrNull(pageIndex)
-//                        currentTitle = album?.title ?: ""
-//                    }
-//                }
-
+                // print the photos
+                Log.d("PhotoGalleryScreenIF", "Photos: ${state.photos.size}")
+//                Log.d("PhotoGalleryScreen", state.photos.toString())
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = paddingValues,
-                    pageSize = PageSize.Fill,
-                    pageSpacing = 16.dp,
                     state = pagerState,
-                    key = { state.photos[it].id },
+                    key = { state.photos[it].id }
                 ) { pageIndex ->
                     val photo = state.photos[pageIndex]
                     PhotoPreview(
-                        modifier = Modifier,
-                        url = photo.coverPhotoUrl ?: "",
+                        modifier = Modifier.fillMaxSize(),
+                        url = photo.coverPhotoUrl ?: ""
                     )
                 }
-
             } else {
+                Log.d("PhotoGalleryScreenELSE", "Photos: ${state.photos.size}")
                 Text(
                     modifier = Modifier.fillMaxSize(),
                     text = "No albums.",
                 )
             }
-        },
+        }
     )
 }

@@ -59,9 +59,9 @@ fun AppNavigation() {
         )
 
         photoGallery(
-            route = "albums/{albumId}",
+            route = "albums/{Id}",
             arguments = listOf(
-                navArgument(name = "albumId") {
+                navArgument(name = "Id") {
                     nullable = false
                     type = NavType.StringType
                 }

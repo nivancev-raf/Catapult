@@ -39,14 +39,18 @@ class PhotosRepository @Inject constructor(
         return database.albumDao().observeBreedAlbums(breedId = breedId)
     }
 
+    suspend fun getAlbums(breedId: String): List<Album> {
+        return database.albumDao().getAlbumsByBreedId(breedId = breedId)
+    }
+
 //    fun observeAlbumPhotos(albumId: String): Flow<List<Album>> {
 //        return database.albumDao().observeAlbumPhotos(albumId = albumId)
 //            .map { it.map { album -> album.asAlbumDbModel() } }
 //    }
 
-    fun observeAlbumPhotos(albumId: String): Flow<List<Album>> {
-        return database.albumDao().observeAlbumPhotos(albumId = albumId)
-    }
+//    fun observeAlbumPhotos(albumId: String): Flow<List<Album>> {
+//        return database.albumDao().observeAlbumPhotos(albumId = albumId)
+//    }
 
 
 //    suspend fun deleteAlbum(albumId: Int) {

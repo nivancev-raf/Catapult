@@ -32,6 +32,11 @@ interface AlbumDao {
     @Query("SELECT * FROM Album WHERE breedOwnerId = :breedId")
     fun observeBreedAlbums(breedId: String): Flow<List<Album>>
 
+    // get all photos with same breedOwnerId
+    @Query("SELECT * FROM Album WHERE breedOwnerId = :breedId")
+    suspend fun getAlbumsByBreedId(breedId: String): List<Album>
+
+
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
     fun observeAlbumPhotos(albumId: String): Flow<List<Album>>
 
