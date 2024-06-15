@@ -2,6 +2,7 @@ package com.example.catapult.breeds.repository
 
 import com.example.catapult.breeds.api.BreedsApi
 import com.example.catapult.breeds.api.model.BreedApiModel
+import com.example.catapult.breeds.db.BreedData
 import com.example.catapult.breeds.mappers.asBreedDbModel
 import com.example.catapult.db.AppDatabase
 import com.example.catapult.details.api.model.PhotoApiModel
@@ -30,10 +31,17 @@ class BreedsRepository @Inject constructor(
 
     suspend fun fetchBreedById(breedId: String) : BreedApiModel {
         try {
+//            val breedById = database.breedsDao().getBreed(breedId = breedId)
+//            return breedById.asBreedUiModel()
             return breedsApi.getBreed(breedId = breedId)
         } catch (error: IOException) {
             throw error
         }
+    }
+
+    // get breed by id, return is BreedData
+    suspend fun getBreedById(breedId: String) : BreedData {
+        return database.breedsDao().getBreed(breedId = breedId)
     }
 
     suspend fun fetchBreedImage(breedImageId: String) : PhotoApiModel {
@@ -43,6 +51,24 @@ class BreedsRepository @Inject constructor(
             throw error
         }
     }
+
+    suspend fun getRandomBreedsExcluding(breedId: String): List<BreedData> {
+        return database.breedsDao().getRandomBreedsExcluding(breedId)
+    }
+
+    // getRandomTemperamentsExcluding
+    suspend fun getRandomTemperamentsExcluding(breedId: String): List<String> {
+        return database.breedsDao().getRandomTemperamentsExcluding(breedId)
+    }
+
+    // In your repository or ViewModel
+    suspend fun getOneRandomTemperamentExcluding(excludedTemperaments: List<String>): String? {
+        return database.breedsDao().getRandomTemperamentExcluding(excludedTemperaments)
+    }
+
+    //
+
+
 
 
 }

@@ -43,6 +43,14 @@ class PhotosRepository @Inject constructor(
         return database.albumDao().getAlbumsByBreedId(breedId = breedId)
     }
 
+    suspend fun getRandomBreedOwnerId(): String {
+        return database.albumDao().getRandomBreedOwnerId()
+    }
+
+    suspend fun getRandomAlbumByBreedOwnerId(breedOwnerId: String): Album {
+        return database.albumDao().getRandomAlbumByBreedOwnerId(breedOwnerId)
+    }
+
 //    fun observeAlbumPhotos(albumId: String): Flow<List<Album>> {
 //        return database.albumDao().observeAlbumPhotos(albumId = albumId)
 //            .map { it.map { album -> album.asAlbumDbModel() } }

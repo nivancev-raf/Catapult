@@ -5,6 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catapult.breeds.api.model.BreedApiModel
+import com.example.catapult.breeds.db.BreedData
+import com.example.catapult.breeds.mappers.asBreedUiModel
+import com.example.catapult.breeds.mappers.toDetailsUiModel
 import com.example.catapult.breeds.repository.BreedsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,9 +50,13 @@ class DetailsViewModel @Inject constructor(
             setState { copy(fetching = true) }
             try {
                 val data = withContext(Dispatchers.IO) {
-                    breedRepository.fetchBreedById(breedId = breedId)
+//                    breedRepository.fetchBreedById(breedId = breedId)
+                    breedRepository.getBreedById(breedId = breedId)
+                    // return is BreedData, so we need to map it to BreedApiModel
                 }
-                setState { copy(data = data.asBreedUiModel()) }
+                val apiModel = data.toBreedApiModel()
+
+                setState { copy(data = apiModel.toDetailsUiModel()) }
                 fetchBreedImage(data.reference_image_id?: "")
             } catch (error: IOException) {
                 setState {
@@ -80,24 +87,7 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    // mapper
-    private fun BreedApiModel.asBreedUiModel() = DetailsUiModel(
-        id = this.id,
-        name = this.name,
-        reference_image_id = this.reference_image_id, // Assuming that Image in API model and UI model are the same type
-        description = this.description,
-        origin = this.origin,
-        temperament = this.temperament,
-        life_span = this.life_span,
-        weight = this.weight, // Assuming that Weight in API model and UI model are the same type
-        adaptability = this.adaptability,
-        affection_level = this.affection_level,
-        child_friendly = this.child_friendly,
-        dog_friendly = this.dog_friendly,
-        energy_level = this.energy_level,
-        wikipedia_url = this.wikipedia_url,
-        rare = this.rare // You might need to adjust the type or the way you map this field
-    )
+    // mappe
 
     // mapper
     private fun PhotoApiModel.asBreedImageUiModel() = PhotoUiModel(
@@ -105,5 +95,24 @@ class DetailsViewModel @Inject constructor(
         url = this.url,
 //        width = this.width,
 //        height = this.height
+    )
+
+    private fun BreedData.toBreedApiModel() = BreedApiModel(
+        id = this.id,
+        name = this.name,
+        alt_names = this.alt_names,
+        description = this.description,
+        temperament = this.temperament,
+        origin = this.origin,
+        life_span = this.life_span,
+        reference_image_id = this.reference_image_id,
+        wikipedia_url = this.wikipedia_url,
+        adaptability = this.adaptability,
+        affection_level = this.affection_level,
+        child_friendly = this.child_friendly,
+        dog_friendly = this.dog_friendly,
+        energy_level = this.energy_level,
+        rare = this.rare,
+        weight = this.weight
     )
 }

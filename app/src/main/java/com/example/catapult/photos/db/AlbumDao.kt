@@ -40,6 +40,13 @@ interface AlbumDao {
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
     fun observeAlbumPhotos(albumId: String): Flow<List<Album>>
 
-//    @Query("DELETE FROM Album WHERE albumId = :albumId")
-//    suspend fun deleteAlbum(albumId: Int)
+    // get random breedOwnerId
+    @Query("SELECT breedOwnerId FROM Album ORDER BY RANDOM() LIMIT 1")
+    suspend fun getRandomBreedOwnerId(): String
+
+    // get random albumId with same breedOwnerId
+    @Query("SELECT * FROM Album WHERE breedOwnerId = :breedOwnerId ORDER BY RANDOM() LIMIT 1")
+    suspend fun getRandomAlbumByBreedOwnerId(breedOwnerId: String): Album
+
+
 }

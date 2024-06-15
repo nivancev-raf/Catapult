@@ -4,12 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.catapult.breeds.list.cats
 import com.example.catapult.details.breedDetails
 import com.example.catapult.photos.albums.grid.breedAlbumsGrid
 import com.example.catapult.photos.gallery.photoGallery
+import com.example.catapult.quiz.ui.ResultScreen
+import com.example.catapult.quiz.ui.quiz
 
 
 @Composable
@@ -85,6 +88,25 @@ fun AppNavigation() {
                 navController.navigateUp()
             }
         )
+
+        quiz(
+            route = "quiz",
+            arguments = listOf(),
+            onQuizCompleted = { navController.navigate("result") },
+            onClose = { navController.navigateUp() },
+            onPublishScore = {
+                // Handle publish score
+                // For example, navigate to leaderboard or show a toast
+            }
+        )
+
+        composable("result") {
+            ResultScreen(
+                score = 0f,  // Replace with actual score from view model
+                onFinish = { navController.navigate("breeds") },
+                onPublish = { /* Handle publish action */ }
+            )
+        }
 
 
     }
