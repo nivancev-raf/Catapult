@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResultScreen(
-    score: Float,
+    ubp: Float,
     onFinish: () -> Unit,
     onPublish: () -> Unit
 ) {
@@ -42,7 +42,7 @@ fun ResultScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
-                        text = "Your Score: $score",
+                        text = "Your Score: $ubp",
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )

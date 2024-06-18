@@ -18,6 +18,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil.compose.rememberImagePainter
+import com.example.catapult.breeds.list.BreedListContract
 import com.example.catapult.quiz.model.AnswerOption
 import com.example.catapult.quiz.model.Question
 import com.example.catapult.quiz.ui.QuizContract.QuizUiState
@@ -39,13 +40,16 @@ fun NavGraphBuilder.quiz(
 
     if (state.value.questions.isEmpty()) {
         ResultScreen(
-            score = state.value.score,
+            ubp = state.value.ubp,
             onFinish = onClose,
             onPublish = onPublishScore
         )
     } else {
         QuizScreen(
             state = state.value,
+            eventPublisher = {
+                quizViewModel.setEvent(it)
+            },
             onOptionSelected = { option -> quizViewModel.submitAnswer(option) },
             onQuizCompleted = onQuizCompleted,
             onClose = onClose
@@ -57,16 +61,42 @@ fun NavGraphBuilder.quiz(
 @Composable
 fun QuizScreen(
     state: QuizUiState,
+    eventPublisher: (uiEvent: QuizContract.QuizEvents) -> Unit,
     onOptionSelected: (AnswerOption) -> Unit,
     onQuizCompleted: () -> Unit,
     onClose: () -> Unit,
 ) {
+    // if showdialog is true, show alert dialog
+    if (state.showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { eventPublisher(QuizContract.QuizEvents.StopQuiz) },
+            title = { Text("Exit Quiz") },
+            text = { Text("Are you sure you want to exit the quiz?") },
+            confirmButton = {
+                Button(
+                    onClick = { onClose() }
+                ) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { eventPublisher(QuizContract.QuizEvents.ContinueQuiz) }
+                ) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
+
+
     Scaffold(
         topBar = {
             MediumTopAppBar(
                 title = { Text(text = "Quiz") },
                 navigationIcon = {
-                    IconButton(onClick = onClose) {
+                    IconButton(onClick = { eventPublisher(QuizContract.QuizEvents.StopQuiz) }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },actions = {

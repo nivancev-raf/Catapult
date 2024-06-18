@@ -93,7 +93,7 @@ fun AppNavigation() {
             route = "quiz",
             arguments = listOf(),
             onQuizCompleted = { navController.navigate("result") },
-            onClose = { navController.navigateUp() },
+            onClose = { navController.navigate("breeds") },
             onPublishScore = {
                 // Handle publish score
                 // For example, navigate to leaderboard or show a toast
@@ -102,7 +102,7 @@ fun AppNavigation() {
 
         composable("result") {
             ResultScreen(
-                score = 0f,  // Replace with actual score from view model
+                ubp = 0f,  // Replace with actual score from view model
                 onFinish = { navController.navigate("breeds") },
                 onPublish = { /* Handle publish action */ }
             )

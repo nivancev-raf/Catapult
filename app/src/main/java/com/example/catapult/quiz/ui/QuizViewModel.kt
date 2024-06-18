@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catapult.breeds.db.BreedData
+import com.example.catapult.breeds.list.BreedListContract
 import com.example.catapult.quiz.model.AnswerOption
 import com.example.catapult.quiz.model.Question
 import com.example.catapult.photos.repository.PhotosRepository
@@ -20,6 +21,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.example.catapult.quiz.ui.QuizContract.QuizUiState
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 
 @HiltViewModel
@@ -32,9 +34,14 @@ class QuizViewModel @Inject constructor(
     val state = _state.asStateFlow()
     private fun setState(reducer: QuizUiState.() -> QuizUiState) = _state.update(reducer)
 
+    private val events = MutableSharedFlow<QuizContract.QuizEvents>() // handle events that represent user interactions
+    private var pausedTimeRemaining: Long = 0
+    fun setEvent(event: QuizContract.QuizEvents) = viewModelScope.launch { events.emit(event) }
+
     private var timer: CountDownTimer? = null // timer
 
     init {
+        observeEvents()
         fetchQuestions()
         startTimer()
     }
@@ -51,6 +58,27 @@ class QuizViewModel @Inject constructor(
             } catch (error: Exception) {
                 Log.d("QuizViewModel", "Exception", error)
                 setState { copy(updating = false, error = error) }
+            }
+        }
+    }
+
+    // collect - funkcija koja se koristi za prikupljanje vrednosti iz flow-a
+    // flow je koncept koji se koristi za emitovanje (vise) dogadjaja asinhrono (kao stream u javi)
+    private fun observeEvents() {
+        viewModelScope.launch {       // izvrsava se na main threadu po defaultu
+            events.collect {
+                when (it) {
+                    is QuizContract.QuizEvents.StopQuiz -> {
+                        timer?.cancel()
+                        setState { copy(showExitDialog = true) }
+                    }
+                    is QuizContract.QuizEvents.ContinueQuiz -> {
+                        pausedTimeRemaining = _state.value.timeRemaining
+                        startTimer(pausedTimeRemaining)
+                        setState { copy(showExitDialog = false) }
+                        //
+                    }
+                }
             }
         }
     }
@@ -152,12 +180,30 @@ class QuizViewModel @Inject constructor(
                         isOptionCorrect = null
                     )
                 }
+
+//                // ukoliko nije zavrsio sva pitanja a vreme je isteklo, prelazimo na Result screen
+//                if (_state.value.timeRemaining <= 0) {
+//                    Log.d("VremeJeIsteklo", "Vreme je isteklo")
+//                    setState { copy(questions = emptyList()) }
+//                    val ubp = calculateUBP();
+//                    ubp.coerceAtMost(maximumValue = 100.00f)
+//                    setState { copy(ubp = ubp) }
+//                }
+
             } else {
                 Log.d("QuizViewModel", "Quiz completed with score: ${_state.value.score}")
                 // Navigate to result screen
                 setState { copy(questions = emptyList()) }
+
+                val ubp = calculateUBP();
+                ubp.coerceAtMost(maximumValue = 100.00f)
+                setState { copy(ubp = ubp) }
             }
         }
+    }
+
+    private fun calculateUBP(): Float {
+        return (_state.value.score * 2.5 * (1 + ((_state.value.timeRemaining / 1000) + 120) / 300)).toFloat()
     }
 
     // ovo je pravljeno jer je bilo moguce da se neki od temperamenata od razlicitih macaka ponavljaju
@@ -192,14 +238,24 @@ class QuizViewModel @Inject constructor(
         return temperaments
     }
 
-    private fun startTimer() {
-        timer = object : CountDownTimer(300000, 1000) { // 1000ms = 1s, 300000ms = 5min
+    fun stopTimer() {
+        timer?.cancel()
+    }
+
+    private fun startTimer(time: Long = 10000) {
+        timer = object : CountDownTimer(time, 1000) { // 1000ms = 1s, 300000ms = 5min
             override fun onTick(millisUntilFinished: Long) {
                 setState { copy(timeRemaining = millisUntilFinished) }
             }
 
             override fun onFinish() {
-                setState { copy(questions = emptyList()) }
+                // ukoliko nije zavrsio sva pitanja a vreme je isteklo, prelazimo na Result
+                setState { copy(questions = emptyList()) } // vracamo na Result screen
+
+                val ubp = calculateUBP();
+                ubp.coerceAtMost(maximumValue = 100.00f)
+                setState { copy(ubp = ubp) }
+
             }
         }
         timer?.start() // timer? means that timer can be null
