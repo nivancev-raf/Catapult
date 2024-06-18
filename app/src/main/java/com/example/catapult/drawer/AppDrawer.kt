@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.HorizontalDivider
@@ -31,6 +32,7 @@ fun BreedListDrawer(
     onProfileClick: () -> Unit,
     onBreedsClick: () -> Unit,
     onQuizClick: () -> Unit,
+    onLeaderboardClick: () -> Unit,
 ) {
     BoxWithConstraints {
         ModalDrawerSheet( // prikazuje se kao modalni sheet, modalni sheet je deo ekrana koji se pojavljuje iznad ostatka ekrana
@@ -67,6 +69,12 @@ fun BreedListDrawer(
                         icon = Icons.Default.ThumbUp,
                         text = "Quiz",
                         onClick = onQuizClick,
+                    )
+
+                    AppDrawerActionItem(
+                        icon = Icons.Default.Info,
+                        text = "Leaderboard",
+                        onClick = onLeaderboardClick,
                     )
                 }
 

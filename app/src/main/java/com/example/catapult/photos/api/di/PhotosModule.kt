@@ -1,5 +1,6 @@
 package com.example.catapult.photos.api.di
 
+import com.example.catapult.networking.di.DefaultRetrofit
 import com.example.catapult.photos.api.PhotosApi
 import dagger.Module
 import dagger.Provides
@@ -15,5 +16,5 @@ object PhotosModule {
 
     @Provides
     @Singleton
-    fun providePhotosApi(retrofit: Retrofit): PhotosApi = retrofit.create()
+    fun providePhotosApi(@DefaultRetrofit retrofit: Retrofit): PhotosApi = retrofit.create()
 }

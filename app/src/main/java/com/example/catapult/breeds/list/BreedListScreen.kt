@@ -36,6 +36,7 @@ fun NavGraphBuilder.cats(
     onProfileClick: () -> Unit,
     onBreedsClick: () -> Unit,
     onQuizClick: () -> Unit,
+    onLeaderboardClick: () -> Unit,
 ) = composable(
     route = route
 ) {
@@ -51,6 +52,7 @@ fun NavGraphBuilder.cats(
         onProfileClick = onProfileClick,
         onBreedsClick = onBreedsClick,
         onQuizClick = onQuizClick,
+        onLeaderboardClick = onLeaderboardClick,
     )
 }
 
@@ -64,6 +66,8 @@ fun BreedListScreen(
     onProfileClick: () -> Unit,
     onBreedsClick: () -> Unit,
     onQuizClick: () -> Unit,
+    onLeaderboardClick: () -> Unit,
+
 ) {
     val uiScope = rememberCoroutineScope() // uiScope je CoroutineScope koji je vezan za UI thread
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed) // stanje drawera - open ili closed (po defaultu je closed)
@@ -96,6 +100,11 @@ fun BreedListScreen(
                     uiScope.launch { drawerState.close() }
                     onQuizClick()
                 },
+                onLeaderboardClick = {
+                    uiScope.launch { drawerState.close() }
+                    onLeaderboardClick()
+                }
+
             )
         },
         // sadržaj breed list ekrana

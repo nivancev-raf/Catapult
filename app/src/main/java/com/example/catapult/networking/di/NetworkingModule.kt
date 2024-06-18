@@ -1,5 +1,7 @@
 package com.example.catapult.networking.di
 
+import com.example.catapult.leaderboard.di.LeaderboardBaseUrl
+import com.example.catapult.leaderboard.di.LeaderboardRetrofit
 import com.example.catapult.networking.serialization.AppJson
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -40,13 +42,29 @@ object NetworkingModule {
 
     @Singleton
     @Provides
+    @DefaultRetrofit
     fun provideRetrofitClient(
         okHttpClient: OkHttpClient,
         @BaseUrl apiUrl: String,
     ) : Retrofit {
         return Retrofit.Builder()
-//            .baseUrl("https://jsonplaceholder.typicode.com/")
+//            .baseUrl("https://api.thecatapi.com/v1/")
             .baseUrl(apiUrl)
+            .client(okHttpClient)
+            .addConverterFactory(AppJson.asConverterFactory("application/json".toMediaType()))
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    @LeaderboardRetrofit
+    fun provideLeaderboardRetrofitClient(
+        okHttpClient: OkHttpClient,
+        @LeaderboardBaseUrl leaderboardApiUrl: String,
+    ): Retrofit {
+        return Retrofit.Builder()
+            // .baseUrl("https://rma.finlab.rs")
+            .baseUrl(leaderboardApiUrl)
             .client(okHttpClient)
             .addConverterFactory(AppJson.asConverterFactory("application/json".toMediaType()))
             .build()

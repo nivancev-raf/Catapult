@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.catapult.breeds.list.cats
 import com.example.catapult.details.breedDetails
+import com.example.catapult.leaderboard.ui.leaderboard
 import com.example.catapult.photos.albums.grid.breedAlbumsGrid
 import com.example.catapult.photos.gallery.photoGallery
 import com.example.catapult.quiz.ui.ResultScreen
@@ -41,6 +42,9 @@ fun AppNavigation() {
                 // Implement the action when quiz is clicked
                 // For example, navigate to the quiz screen
                 navController.navigate(route = "quiz")
+            },
+            onLeaderboardClick = {
+                navController.navigate(route = "leaderboard")
             }
         )
 
@@ -107,6 +111,11 @@ fun AppNavigation() {
                 onPublish = { /* Handle publish action */ }
             )
         }
+
+        leaderboard(
+            route = "leaderboard",
+            onClose = { navController.navigate("breeds") }
+        )
 
 
     }

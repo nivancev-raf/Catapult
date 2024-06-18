@@ -1,6 +1,7 @@
 package com.example.catapult.breeds.di
 
 import com.example.catapult.breeds.api.BreedsApi
+import com.example.catapult.networking.di.DefaultRetrofit
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,10 +12,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object UsersModule {
+object BreedsModule {
 
     @Provides
     @Singleton
-    fun provideUsersApi(retrofit: Retrofit): BreedsApi = retrofit.create()
-    // ovde smo dodali provideUsersApi funkciju koja vraca instancu UsersApi interfejsa
+    fun provideBreedsApi(@DefaultRetrofit retrofit: Retrofit): BreedsApi = retrofit.create()
+    // ovde smo dodali provideBreedsApi funkciju koja vraca instancu BreedApi interfejsa
 }
