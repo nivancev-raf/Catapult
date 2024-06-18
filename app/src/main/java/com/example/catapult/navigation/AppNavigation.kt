@@ -1,6 +1,20 @@
 package com.example.catapult.navigation
 
+import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,14 +28,44 @@ import com.example.catapult.photos.albums.grid.breedAlbumsGrid
 import com.example.catapult.photos.gallery.photoGallery
 import com.example.catapult.quiz.ui.ResultScreen
 import com.example.catapult.quiz.ui.quiz
+import com.example.catapult.users.UserProfile
+import com.example.catapult.users.login.ui.LoginScreen
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import rs.edu.raf.rma.auth.AuthStore
 
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(authStore: AuthStore) {
     val navController = rememberNavController()
+//    var startDestination by remember { mutableStateOf("login") }
+    var startDestination by remember { mutableStateOf<String?>(null) } // Initially null
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            val userProfile = authStore.authData.first()
+            Log.d("DATASTORE", "AuthData = $userProfile")
+            startDestination = if (userProfile.name.isEmpty() && userProfile.nickname.isEmpty() && userProfile.email.isEmpty()) "login" else "breeds"
+            // log startDestination
+            Log.d("DATASTORE", "startDestination = $startDestination")
+        }
+    }
+
+
+    if (startDestination == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }else{
+
+
     NavHost( //
         navController = navController,
-        startDestination = "breeds"
+        startDestination = startDestination!! // startDestination!!, !! -> means that startDestination is not null
     ) {
         cats(
             route = "breeds",
@@ -117,8 +161,13 @@ fun AppNavigation() {
             onClose = { navController.navigate("breeds") }
         )
 
+        composable("login") {
+            LoginScreen(navController)
+        }
 
     }
+    }
+
 
 }
 

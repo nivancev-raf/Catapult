@@ -118,4 +118,7 @@ dependencies {
 
     // chips
     implementation ("androidx.compose.material3:material3:1.3.0-alpha04")
+
+    // Datastore
+    implementation("androidx.datastore:datastore:1.1.1")
 }
