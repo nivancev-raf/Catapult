@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import com.example.catapult.navigation.AppNavigation
 import com.example.catapult.ui.theme.CatalistTheme
 import dagger.hilt.android.AndroidEntryPoint
-import rs.edu.raf.rma.auth.AuthStore
+import com.example.catapult.auth.AuthStore
 import javax.inject.Inject
 
 @AndroidEntryPoint

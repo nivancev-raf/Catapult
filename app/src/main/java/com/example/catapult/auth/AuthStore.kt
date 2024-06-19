@@ -1,4 +1,4 @@
-package rs.edu.raf.rma.auth
+package com.example.catapult.auth
 
 import androidx.datastore.core.DataStore
 import com.example.catapult.users.UserProfile

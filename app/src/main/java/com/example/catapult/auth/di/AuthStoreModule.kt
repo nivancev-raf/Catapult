@@ -1,4 +1,4 @@
-package rs.edu.raf.rma.auth.di
+package com.example.catapult.auth.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -10,7 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import rs.edu.raf.rma.auth.UserProfileSerializer
+import com.example.catapult.auth.UserProfileSerializer
 import javax.inject.Singleton
 
 @Module

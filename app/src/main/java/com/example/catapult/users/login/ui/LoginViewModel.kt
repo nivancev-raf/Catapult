@@ -2,11 +2,10 @@ package com.example.catapult.users.login.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catapult.quiz.ui.QuizContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import rs.edu.raf.rma.auth.AuthStore
+import com.example.catapult.auth.AuthStore
 import com.example.catapult.users.UserProfile
 import javax.inject.Inject
 

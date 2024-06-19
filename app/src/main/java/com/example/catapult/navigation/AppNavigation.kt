@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,7 +13,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -28,11 +26,10 @@ import com.example.catapult.photos.albums.grid.breedAlbumsGrid
 import com.example.catapult.photos.gallery.photoGallery
 import com.example.catapult.quiz.ui.ResultScreen
 import com.example.catapult.quiz.ui.quiz
-import com.example.catapult.users.UserProfile
 import com.example.catapult.users.login.ui.LoginScreen
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import rs.edu.raf.rma.auth.AuthStore
+import com.example.catapult.auth.AuthStore
 
 
 @Composable
