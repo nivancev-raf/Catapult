@@ -16,14 +16,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.*
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.catapult.leaderboard.model.LeaderboardEntry
+import com.example.catapult.leaderboard.model.LeaderboardPost
+import com.example.catapult.leaderboard.ui.LeaderboardContract
+import com.example.catapult.leaderboard.ui.LeaderboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResultScreen(
+    nickname: String,
     ubp: Float,
     onFinish: () -> Unit,
     onPublish: () -> Unit
 ) {
+
+    val leaderboardViewModel: LeaderboardViewModel = hiltViewModel()
     Scaffold(
         topBar = {
             MediumTopAppBar(
@@ -50,7 +59,15 @@ fun ResultScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Button(
-                            onClick = onPublish,
+                            onClick = {
+                                val result = LeaderboardPost(
+                                    nickname = nickname,
+                                    result = ubp,
+                                    category = 1, // Replace with actual category
+                                )
+                                leaderboardViewModel.setEvent(LeaderboardContract.LeaderboardUiEvent.PostResult(result))
+                                onPublish()
+                            },
                             modifier = Modifier.padding(8.dp)
                         ) {
                             Text("Publish")

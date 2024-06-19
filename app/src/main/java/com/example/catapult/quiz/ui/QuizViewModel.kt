@@ -50,6 +50,7 @@ class QuizViewModel @Inject constructor(
     init {
         observeEvents()
         fetchQuestions()
+        fetchNickname()
         startTimer()
     }
 
@@ -66,6 +67,13 @@ class QuizViewModel @Inject constructor(
                 Log.d("QuizViewModel", "Exception", error)
                 setState { copy(updating = false, error = error) }
             }
+        }
+    }
+
+    private fun fetchNickname() {
+        viewModelScope.launch {
+            val userProfile = authStore.authData.first()
+            setState { copy(nickname = userProfile.nickname) }
         }
     }
 

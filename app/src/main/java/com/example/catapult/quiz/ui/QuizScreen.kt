@@ -8,7 +8,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +26,7 @@ import com.example.catapult.breeds.list.BreedListContract
 import com.example.catapult.quiz.model.AnswerOption
 import com.example.catapult.quiz.model.Question
 import com.example.catapult.quiz.ui.QuizContract.QuizUiState
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.quiz(
     route: String,
@@ -38,10 +43,12 @@ fun NavGraphBuilder.quiz(
 
     val state = quizViewModel.state.collectAsState()
 
+
     if (state.value.questions.isEmpty()) {
         ResultScreen(
             ubp = state.value.ubp,
             onFinish = onClose,
+            nickname = state.value.nickname,
             onPublish = onPublishScore
         )
     } else {

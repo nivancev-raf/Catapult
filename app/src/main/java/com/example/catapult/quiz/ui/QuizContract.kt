@@ -17,7 +17,8 @@ interface QuizContract {
         val isOptionCorrect: Boolean? = null,
         val timeRemaining: Long = 300000L, // max vreme trajanja kviza (300 sec)
         val ubp: Float = 0f, // ukupan broj poena
-        val showExitDialog: Boolean = false
+        val showExitDialog: Boolean = false,
+        val nickname: String = "" // Add nickname here
     )
 
     sealed class QuizEvents {

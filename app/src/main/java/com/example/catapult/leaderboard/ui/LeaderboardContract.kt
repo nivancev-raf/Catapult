@@ -1,6 +1,7 @@
 package com.example.catapult.leaderboard.ui
 
 import com.example.catapult.leaderboard.model.LeaderboardEntry
+import com.example.catapult.leaderboard.model.LeaderboardPost
 
 interface LeaderboardContract {
     data class LeaderboardUiState(
@@ -11,6 +12,7 @@ interface LeaderboardContract {
 
     sealed class LeaderboardUiEvent {
         object LoadLeaderboard : LeaderboardUiEvent()
+        data class PostResult(val result: LeaderboardPost) : LeaderboardUiEvent()
     }
 
     sealed class LeaderboardError {

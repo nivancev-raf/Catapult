@@ -38,15 +38,16 @@ fun AppNavigation(authStore: AuthStore) {
     val navController = rememberNavController()
 //    var startDestination by remember { mutableStateOf("login") }
     var startDestination by remember { mutableStateOf<String?>(null) } // Initially null
+
     val scope = rememberCoroutineScope()
+    var nickname by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         scope.launch {
             val userProfile = authStore.authData.first()
+            nickname = userProfile.nickname
             Log.d("DATASTORE", "AuthData = $userProfile")
             startDestination = if (userProfile.name.isEmpty() && userProfile.nickname.isEmpty() && userProfile.email.isEmpty()) "login" else "breeds"
-            // log startDestination
-            Log.d("DATASTORE", "startDestination = $startDestination")
         }
     }
 
@@ -143,14 +144,16 @@ fun AppNavigation(authStore: AuthStore) {
             onPublishScore = {
                 // Handle publish score
                 // For example, navigate to leaderboard or show a toast
+                navController.navigate("leaderboard")
             }
         )
 
         composable("result") {
             ResultScreen(
+                nickname = nickname,
                 ubp = 0f,  // Replace with actual score from view model
                 onFinish = { navController.navigate("breeds") },
-                onPublish = { /* Handle publish action */ }
+                onPublish = { navController.navigate("leaderboard") }
             )
         }
 

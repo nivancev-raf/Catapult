@@ -3,6 +3,8 @@ package com.example.catapult.leaderboard.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.catapult.leaderboard.model.LeaderboardEntry
+import com.example.catapult.leaderboard.model.LeaderboardPost
 import com.example.catapult.leaderboard.repository.LeaderboardRepository
 import com.example.catapult.leaderboard.ui.LeaderboardContract
 
@@ -38,6 +40,7 @@ class LeaderboardViewModel @Inject constructor(
             events.collect {
                 when (it) {
                     is LeaderboardUiEvent.LoadLeaderboard -> loadLeaderboard(1)
+                    is LeaderboardUiEvent.PostResult -> postResult(it.result)
                 }
             }
         }
@@ -56,4 +59,16 @@ class LeaderboardViewModel @Inject constructor(
             }
         }
     }
+
+    private fun postResult(result: LeaderboardPost) {
+        viewModelScope.launch {
+            try {
+                val response = repository.postResult(result)
+                Log.d("LeaderboardViewModel", "postResult: success with ranking ${response.ranking}")
+            } catch (error: Exception) {
+                Log.d("LeaderboardViewModel", "postResult: $error")
+            }
+        }
+    }
+
 }
