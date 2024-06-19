@@ -3,6 +3,7 @@ package com.example.catapult.quiz.ui
 import android.app.AlertDialog
 import com.example.catapult.quiz.model.AnswerOption
 import com.example.catapult.quiz.model.Question
+import com.example.catapult.users.profile.ui.ProfileContract
 
 interface QuizContract {
 

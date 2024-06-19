@@ -30,6 +30,7 @@ import com.example.catapult.users.login.ui.LoginScreen
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import com.example.catapult.auth.AuthStore
+import com.example.catapult.users.profile.ui.ProfileScreen
 
 
 @Composable
@@ -160,6 +161,10 @@ fun AppNavigation(authStore: AuthStore) {
 
         composable("login") {
             LoginScreen(navController)
+        }
+
+        composable("profile") {
+            ProfileScreen(navController)
         }
 
     }

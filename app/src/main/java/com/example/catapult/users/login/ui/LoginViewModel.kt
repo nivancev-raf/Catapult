@@ -63,40 +63,4 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-//    fun onEvent(event: LoginContract.LoginEvent) {
-//        when (event) {
-//            is LoginEvent.OnNameChange -> {
-//                _uiState.value = _uiState.value.copy(
-//                    name = event.name,
-//                    isNameValid = event.name.isNotBlank()
-//                )
-//            }
-//            is LoginEvent.OnNicknameChange -> {
-//                _uiState.value = _uiState.value.copy(
-//                    nickname = event.nickname,
-//                    isNicknameValid = event.nickname.matches(Regex("^[a-zA-Z0-9_]*$"))
-//                )
-//            }
-//            is LoginEvent.OnEmailChange -> {
-//                _uiState.value = _uiState.value.copy(
-//                    email = event.email,
-//                    isEmailValid = android.util.Patterns.EMAIL_ADDRESS.matcher(event.email).matches()
-//                )
-//            }
-//            LoginEvent.OnCreateProfile -> {
-//                val state = _uiState.value
-//                if (state.isNameValid && state.isNicknameValid && state.isEmailValid) {
-//                    val newUserProfile = UserProfile(
-//                        name = state.name,
-//                        nickname = state.nickname,
-//                        email = state.email
-//                    )
-//                    viewModelScope.launch {
-//                        authStore.updateAuthData(newUserProfile)
-//                        _uiState.value = _uiState.value.copy(isProfileCreated = true)
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

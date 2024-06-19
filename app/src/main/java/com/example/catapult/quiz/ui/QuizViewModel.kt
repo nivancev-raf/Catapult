@@ -5,12 +5,15 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.catapult.auth.AuthStore
 import com.example.catapult.breeds.db.BreedData
 import com.example.catapult.breeds.list.BreedListContract
 import com.example.catapult.quiz.model.AnswerOption
 import com.example.catapult.quiz.model.Question
 import com.example.catapult.photos.repository.PhotosRepository
 import com.example.catapult.breeds.repository.BreedsRepository
+import com.example.catapult.quiz.db.QuizResultEntity
+import com.example.catapult.quiz.repository.QuizRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,12 +25,16 @@ import javax.inject.Inject
 import com.example.catapult.quiz.ui.QuizContract.QuizUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
+import java.util.Date
 
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val photoRepository: PhotosRepository,
     private val breedsRepository: BreedsRepository,
+    private val quizRepository: QuizRepository,  // Add QuizRepository here
+    private val authStore: AuthStore  // Add AuthStore to get user details
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(QuizUiState())
@@ -88,6 +95,7 @@ class QuizViewModel @Inject constructor(
         val questions = mutableListOf<Question>()
         for (i in 1..2) { // 10 pitanja
             val randomBreedOwnerId = photoRepository.getRandomBreedOwnerId()  // vadimo random breed
+            Log.d("QuizViewModel1", "RandomBreedOwnerId: $randomBreedOwnerId")
             val randomAlbum = photoRepository.getRandomAlbumByBreedOwnerId(randomBreedOwnerId) // vadimo random sliku za odredjeni breed
             val breedData = breedsRepository.getBreedById(randomBreedOwnerId) // vadimo podatke o breedu
 //            val questionType = (1..3).random() // random biramo tip pitanja
@@ -191,14 +199,28 @@ class QuizViewModel @Inject constructor(
 //                }
 
             } else {
-                Log.d("QuizViewModel", "Quiz completed with score: ${_state.value.score}")
-                // Navigate to result screen
-                setState { copy(questions = emptyList()) }
-
-                val ubp = calculateUBP();
-                ubp.coerceAtMost(maximumValue = 100.00f)
-                setState { copy(ubp = ubp) }
+                finishQuiz()
             }
+        }
+    }
+
+
+    private fun finishQuiz() {
+        viewModelScope.launch {
+            Log.d("QuizViewModel", "Quiz completed with score: ${_state.value.score}")
+            setState { copy(questions = emptyList()) }
+
+            val userProfile = authStore.authData.first()
+            val ubp = calculateUBP().coerceAtMost(100.00f)
+
+            val quizResult = QuizResultEntity(
+                nickname = userProfile.nickname,
+                score = ubp,
+                date = Date(), // trenutni datum
+            )
+            quizRepository.insertQuizResult(quizResult)
+
+            setState { copy(ubp = ubp) }
         }
     }
 
@@ -249,12 +271,13 @@ class QuizViewModel @Inject constructor(
             }
 
             override fun onFinish() {
-                // ukoliko nije zavrsio sva pitanja a vreme je isteklo, prelazimo na Result
-                setState { copy(questions = emptyList()) } // vracamo na Result screen
-
-                val ubp = calculateUBP();
-                ubp.coerceAtMost(maximumValue = 100.00f)
-                setState { copy(ubp = ubp) }
+//                // ukoliko nije zavrsio sva pitanja a vreme je isteklo, prelazimo na Result
+//                setState { copy(questions = emptyList()) } // vracamo na Result screen
+//
+//                val ubp = calculateUBP();
+//                ubp.coerceAtMost(maximumValue = 100.00f)
+//                setState { copy(ubp = ubp) }
+                finishQuiz()
 
             }
         }
