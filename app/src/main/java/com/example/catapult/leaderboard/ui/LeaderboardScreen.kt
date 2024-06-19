@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -47,6 +48,8 @@ fun LeaderboardScreen(
     onClose: () -> Unit,
 ) {
 
+    val nicknameOccurrences = state.leaderboard.groupingBy { it.nickname }.eachCount()
+
     BackHandler(onBack = onClose)
 
     // Event se desava kada se ucita ekran
@@ -79,7 +82,7 @@ fun LeaderboardScreen(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(state.leaderboard) { item ->
+                        itemsIndexed(state.leaderboard) { index, item -> // Use itemsIndexed to get the index
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -95,7 +98,7 @@ fun LeaderboardScreen(
                                 ) {
                                     Column {
                                         Text(
-                                            text = item.nickname,
+                                            text = "${index + 1}. ${item.nickname}", // Display the rank with nickname
                                             style = MaterialTheme.typography.bodyLarge.copy(
                                                 fontWeight = FontWeight.Bold,
                                                 fontSize = 18.sp
@@ -103,7 +106,14 @@ fun LeaderboardScreen(
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = item.result.toString(),
+                                            text = "Score: ${item.result}",
+                                            style = MaterialTheme.typography.bodyMedium.copy(
+                                                color = Color.Gray,
+                                                fontSize = 14.sp
+                                            )
+                                        )
+                                        Text(
+                                            text = "Occurrences: ${nicknameOccurrences[item.nickname]}",
                                             style = MaterialTheme.typography.bodyMedium.copy(
                                                 color = Color.Gray,
                                                 fontSize = 14.sp
@@ -116,6 +126,6 @@ fun LeaderboardScreen(
                     }
                 }
             }
-        },
+        }
     )
 }

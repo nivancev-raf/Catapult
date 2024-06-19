@@ -122,4 +122,8 @@ dependencies {
 
     // Datastore
     implementation("androidx.datastore:datastore:1.1.1")
+
+    // Accompanist - Insets - used for handling system insets
+    implementation ("com.google.accompanist:accompanist-insets:0.23.1")
+
 }
