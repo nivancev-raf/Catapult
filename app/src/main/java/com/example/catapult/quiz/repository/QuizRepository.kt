@@ -22,12 +22,9 @@ class QuizRepository @Inject constructor(
         }
     }
 
-    suspend fun getBestScore(userId: String): Float? {
-        return quizResultDao.getBestScoreForUser(userId)
+    suspend fun getBestScore(nickname: String): Float? {
+        return quizResultDao.getBestScoreForUser(nickname)
     }
 
-    suspend fun getBestPosition(userId: String): Int {
-        return quizResultDao.getBestPositionForUser(userId) + 1 // Adding 1 because position is zero-indexed
-    }
 }
 

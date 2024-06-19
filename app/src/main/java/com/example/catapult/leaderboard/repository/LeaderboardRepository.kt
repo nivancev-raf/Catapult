@@ -16,4 +16,10 @@ class LeaderboardRepository @Inject constructor(
     suspend fun postResult(result: LeaderboardPost): LeaderboardResponse {
         return leaderboardApi.postResult(result)
     }
+
+    suspend fun getBestPositionForUser(nickname: String): Int {
+        val leaderboard = leaderboardApi.getLeaderboard(1)
+        val userPosition = leaderboard.indexOfFirst { it.nickname == nickname }
+        return if (userPosition == -1) -1 else userPosition + 1 // Return 1-based index
+    }
 }

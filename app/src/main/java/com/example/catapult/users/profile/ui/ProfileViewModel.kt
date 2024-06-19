@@ -3,6 +3,7 @@ package com.example.catapult.users.profile.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catapult.auth.AuthStore
+import com.example.catapult.leaderboard.repository.LeaderboardRepository
 import com.example.catapult.quiz.repository.QuizRepository
 import com.example.catapult.users.UserProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val authStore: AuthStore,
-    private val quizRepository: QuizRepository // Assuming you have a repository for quizzes
+    private val quizRepository: QuizRepository, // Assuming you have a repository for quizzes
+    private val leaderboardRepository: LeaderboardRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileContract.ProfileState())
@@ -47,7 +49,7 @@ class ProfileViewModel @Inject constructor(
             val userProfile = authStore.authData.first()
             val quizResultsFlow = quizRepository.getAllQuizResults(userProfile.nickname)
             val bestScore = quizRepository.getBestScore(userProfile.nickname) ?: 0f
-            val bestPosition = quizRepository.getBestPosition(userProfile.nickname)
+            val bestPosition =  leaderboardRepository.getBestPositionForUser(userProfile.nickname)
 
             quizResultsFlow.collect { quizResults ->
                 _uiState.value = _uiState.value.copy(
