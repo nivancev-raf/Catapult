@@ -83,7 +83,7 @@ fun EditProfileButton(navController: NavController) {
     Button(
         onClick = {
             // Navigate to edit screen or open dialog to edit profile
-            navController.navigate("editProfile")
+            navController.navigate("edit_profile")
         },
         modifier = Modifier.fillMaxWidth()
     ) {
