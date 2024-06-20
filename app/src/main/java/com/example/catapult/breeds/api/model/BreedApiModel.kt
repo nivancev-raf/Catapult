@@ -21,6 +21,7 @@ data class BreedApiModel(
     val wikipedia_url: String? = null,
     val weight: Weight,
     val reference_image_id: String? = null,
+    val url: String=""
     )
 
 //@Serializable

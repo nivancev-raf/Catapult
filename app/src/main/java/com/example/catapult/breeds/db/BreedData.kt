@@ -24,6 +24,7 @@ data class BreedData (
     val energy_level: Int,
     val rare: Int,
     val weight: Weight,
+    val imageUrl: String,
 )
 
 

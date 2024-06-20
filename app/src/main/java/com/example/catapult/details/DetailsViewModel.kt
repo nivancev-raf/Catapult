@@ -54,10 +54,14 @@ class DetailsViewModel @Inject constructor(
                     breedRepository.getBreedById(breedId = breedId)
                     // return is BreedData, so we need to map it to BreedApiModel
                 }
-                val apiModel = data.toBreedApiModel()
 
+                val apiModel = data.toBreedApiModel()
+                // now in data I have column imageUrl, I need to set state image to that url
+
+                setState { copy(image = data.toPhotoUiModel())}
                 setState { copy(data = apiModel.toDetailsUiModel()) }
-                fetchBreedImage(data.reference_image_id?: "")
+//                fetchBreedImage(data.reference_image_id?: "")
+//                setState { copy(image = )}
             } catch (error: IOException) {
                 setState {
                     copy(error = DetailsUiState.DetailsError.DataUpdateFailed(cause = error))
@@ -87,7 +91,6 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    // mappe
 
     // mapper
     private fun PhotoApiModel.asBreedImageUiModel() = PhotoUiModel(
@@ -114,5 +117,11 @@ class DetailsViewModel @Inject constructor(
         energy_level = this.energy_level,
         rare = this.rare,
         weight = this.weight
+    )
+
+     // breedData photoUiModel
+    private fun BreedData.toPhotoUiModel() = PhotoUiModel(
+        photoId = this.id,
+        url = this.imageUrl
     )
 }

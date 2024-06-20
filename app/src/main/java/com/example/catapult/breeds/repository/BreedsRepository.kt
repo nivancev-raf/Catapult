@@ -24,20 +24,22 @@ class BreedsRepository @Inject constructor(
 
     suspend fun fetchAllBreeds() {
         val breeds = breedsApi.getAllBreeds()
-        database.breedsDao().insertAll(list = breeds.map { it.asBreedDbModel() })
+
+        val breedsWithImages = breeds.map { breed ->
+            val imageUrl = getBreedImage(breed.reference_image_id)?.url
+            breed.copy(url = imageUrl ?: "")
+        }
+
+//        database.breedsDao().insertAll(list = breeds.map { it.asBreedDbModel() })
+        database.breedsDao().insertAll(breedsWithImages.map { it.asBreedDbModel() })
+    }
+
+    suspend fun getBreedImage(imageId: String?): PhotoApiModel? {
+        return imageId?.let { breedsApi.getBreedImage(it) }
     }
 
     fun observeAllBreeds() = database.breedsDao().observeAllBreeds()
 
-    suspend fun fetchBreedById(breedId: String) : BreedApiModel {
-        try {
-//            val breedById = database.breedsDao().getBreed(breedId = breedId)
-//            return breedById.asBreedUiModel()
-            return breedsApi.getBreed(breedId = breedId)
-        } catch (error: IOException) {
-            throw error
-        }
-    }
 
     // get breed by id, return is BreedData
     suspend fun getBreedById(breedId: String) : BreedData {

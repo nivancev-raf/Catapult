@@ -19,7 +19,7 @@ import com.example.catapult.quiz.model.QuizResultDao
         Album::class,
         QuizResultEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)

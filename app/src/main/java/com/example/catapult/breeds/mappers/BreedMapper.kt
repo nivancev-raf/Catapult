@@ -22,7 +22,8 @@ fun BreedApiModel.asBreedDbModel(): BreedData {
         dog_friendly = this.dog_friendly,
         energy_level = this.energy_level,
         rare = this.rare,
-        weight = this.weight
+        weight = this.weight,
+        imageUrl = this.url
     )
 }
 
@@ -51,7 +52,8 @@ fun BreedApiModel.asBreedUiModel() = DetailsUiModel(
     dog_friendly = this.dog_friendly,
     energy_level = this.energy_level,
     wikipedia_url = this.wikipedia_url,
-    rare = this.rare // You might need to adjust the type or the way you map this field
+    rare = this.rare, // You might need to adjust the type or the way you map this field
+    imageUrl = this.url
 )
 
 fun BreedApiModel.toDetailsUiModel(): DetailsUiModel {
@@ -70,7 +72,8 @@ fun BreedApiModel.toDetailsUiModel(): DetailsUiModel {
         dog_friendly = this.dog_friendly,
         energy_level = this.energy_level,
         wikipedia_url = this.wikipedia_url,
-        rare = this.rare
+        rare = this.rare,
+        imageUrl = this.url
     )
 }
 

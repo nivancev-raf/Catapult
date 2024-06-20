@@ -24,6 +24,7 @@ data class DetailsUiModel(
 
     val rare: Int, // da li je retka vrsta
     val wikipedia_url: String?, // dugme koje otvara stranicu o rasi na Vikipediji u browseru
+    val imageUrl: String
 
 )
 
