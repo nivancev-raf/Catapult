@@ -19,17 +19,14 @@ class AuthStore @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val authData = persistence.data
-        .stateIn(
+        .stateIn( // .stateIn
             scope = scope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Eagerly, // .Eagerly znači da će se flow pokrenuti odmah
             initialValue = runBlocking { persistence.data.first() },
         )
-
+   // runBlocking ne obezbeđuje drugu nit,
+   // već blokira trenutnu nit dok se ne završi izvršavanje suspendovane funkcije unutar runBlocking bloka
     suspend fun updateAuthData(newAuthData: UserProfile) {
-        persistence.updateData { oldAuthData ->
-            // Ukoliko je potrbno možete obraditi nove i stare podatke
-            // pre nego što upišite konačnu novu vrednost u persistence
-            newAuthData
-        }
+        persistence.updateData { oldAuthData -> newAuthData }
     }
 }

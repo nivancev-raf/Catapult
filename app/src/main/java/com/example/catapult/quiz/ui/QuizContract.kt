@@ -24,11 +24,5 @@ interface QuizContract {
     sealed class QuizEvents {
         object StopQuiz : QuizEvents()
         object ContinueQuiz : QuizEvents()
-//        object NextQuestion : QuizEvent()
-//        object FinishQuiz : QuizEvent()
-//        object PublishScore : QuizEvent()
-
-//        data class OptionSelected(val option: AnswerOption) : QuizEvent()
-//        data class TimerTick(val timeRemaining: Long) : QuizEvent()
     }
 }

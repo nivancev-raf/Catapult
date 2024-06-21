@@ -22,13 +22,6 @@ class PhotosRepository @Inject constructor(
             .map { it.asAlbumDbModel(breedId = breedId) }
             .toMutableList()
 
-//         Updating coverUrl for each album
-//        allAlbums.forEachIndexed { index, album ->
-//            val albumPhotos = photosApi.getAlbumPhotos(albumId = album.albumId)
-//            album.imageUrl = albumPhotos.firstOrNull()?.url
-//            allAlbums[index] = album
-//        }
-
         // Persisting albums in the database
         database.withTransaction {
             database.albumDao().upsertAllAlbums(data = allAlbums)

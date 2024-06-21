@@ -13,14 +13,14 @@ import dagger.hilt.components.SingletonComponent
 import com.example.catapult.auth.UserProfileSerializer
 import javax.inject.Singleton
 
-@Module
+@Module // obezbedjuje DI
 @InstallIn(SingletonComponent::class)
 object AuthStoreModule {
 
-    @Provides
+    @Provides // zbog builder pattern-a
     @Singleton
     fun provideAuthDataStore(
-        @ApplicationContext context: Context,
+        @ApplicationContext context: Context, // globalni kontekst aplikacije
     ): DataStore<UserProfile> =
         DataStoreFactory.create(
             produceFile = { context.dataStoreFile("users.txt") },

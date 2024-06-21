@@ -24,13 +24,15 @@ object UserProfileSerializer : Serializer<UserProfile> {
     override val defaultValue: UserProfile = UserProfile("", "", "")
 
     override suspend fun readFrom(input: InputStream): UserProfile {
-        try {
-            return Json.decodeFromString(
-                UserProfile.serializer(),
-                input.readBytes().decodeToString()
-            )
-        } catch (exception: SerializationException) {
-            throw CorruptionException("Cannot read UserProfile.", exception)
+        return withContext(Dispatchers.IO) { // izvrsava se u posebnoj niti a ne na glavnoj
+            try {
+                Json.decodeFromString(
+                    UserProfile.serializer(),
+                    input.readBytes().decodeToString()
+                )
+            } catch (exception: SerializationException) {
+                throw CorruptionException("Cannot read UserProfile.", exception)
+            }
         }
     }
 
@@ -43,27 +45,3 @@ object UserProfileSerializer : Serializer<UserProfile> {
         }
     }
 }
-
-
-
-//class UserProfileSerializer : Serializer<String> {
-//
-//    override val defaultValue: String = ""
-//
-//    override suspend fun readFrom(input: InputStream): String {
-//        return withContext(Dispatchers.IO) {
-//            val sb = StringBuilder()
-//            var ch: Int
-//            while ((input.read().also { ch = it }) != -1) {
-//                sb.append(ch.toChar())
-//            }
-//            sb.toString()
-//        }
-//    }
-//
-//    override suspend fun writeTo(t: String, output: OutputStream) {
-//        withContext(Dispatchers.IO) {
-//            output.write(t.toByteArray())
-//        }
-//    }
-//}

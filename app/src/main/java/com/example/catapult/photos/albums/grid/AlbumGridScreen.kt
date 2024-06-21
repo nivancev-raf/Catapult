@@ -104,7 +104,7 @@ fun AlbumGridScreen(
 
                         itemsIndexed(
                             items = state.albums,
-                            key = { index: Int, album: AlbumUiModel -> album.id },
+                            key = { index: Int, album: AlbumUiModel -> album.id }, // key is used to identify items
                         ) { index: Int, album: AlbumUiModel ->
                             Card(
                                 modifier = Modifier

@@ -101,13 +101,13 @@ class QuizViewModel @Inject constructor(
     // Generate questions
     private suspend fun generateQuestions(): List<Question> {
         val questions = mutableListOf<Question>()
-        for (i in 1..2) { // 10 pitanja
+        for (i in 1..20) { // 10 pitanja
             val randomBreedOwnerId = photoRepository.getRandomBreedOwnerId()  // vadimo random breed
             Log.d("QuizViewModel1", "RandomBreedOwnerId: $randomBreedOwnerId")
             val randomAlbum = photoRepository.getRandomAlbumByBreedOwnerId(randomBreedOwnerId) // vadimo random sliku za odredjeni breed
             val breedData = breedsRepository.getBreedById(randomBreedOwnerId) // vadimo podatke o breedu
-//            val questionType = (1..3).random() // random biramo tip pitanja
-            val questionType = 1;
+            val questionType = (1..3).random() // random biramo tip pitanja
+//            val questionType = 1;
             val questionText = when (questionType) {
                 1 -> "What breed is this cat?"
                 2 -> "Find the odd one out for this cat."
@@ -272,7 +272,7 @@ class QuizViewModel @Inject constructor(
         timer?.cancel()
     }
 
-    private fun startTimer(time: Long = 10000) {
+    private fun startTimer(time: Long = 300000) {
         timer = object : CountDownTimer(time, 1000) { // 1000ms = 1s, 300000ms = 5min
             override fun onTick(millisUntilFinished: Long) {
                 setState { copy(timeRemaining = millisUntilFinished) }

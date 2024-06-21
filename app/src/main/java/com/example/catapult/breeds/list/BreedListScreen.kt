@@ -81,7 +81,7 @@ fun BreedListScreen(
         uiScope.launch { drawerState.close() }
     }
 
-    ModalNavigationDrawer(
+    ModalNavigationDrawer( //
         modifier = Modifier,
         drawerState = drawerState,
         drawerContent = {

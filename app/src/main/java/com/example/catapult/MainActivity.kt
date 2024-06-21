@@ -12,7 +12,9 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var authStore: AuthStore
+    @Inject
+    lateinit var authStore: AuthStore // lateinit -> late initialization, dohvati mi ovo samo kad mi zatreba
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

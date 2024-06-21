@@ -21,11 +21,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(uiState.isProfileCreated) {
-        if (uiState.isProfileCreated) {
-            navController.navigate("breeds")
-        }
-    }
+//    LaunchedEffect(uiState.isProfileCreated) {
+//        if (uiState.isProfileCreated) {
+//            navController.navigate("breeds")
+//        }
+//    }
 
     Column(
         modifier = Modifier

@@ -9,7 +9,7 @@ interface LoginContract {
         val isNameValid: Boolean = true,
         val isNicknameValid: Boolean = true,
         val isEmailValid: Boolean = true,
-        val isProfileCreated: Boolean = false
+//        val isProfileCreated: Boolean = false
     )
 
     sealed class LoginEvent {

@@ -35,11 +35,7 @@ class AlbumGridViewModel @Inject constructor(
     init {
         fetchAlbums()
         observeAlbums()
-        Log.d("BreedIdGrid", breedId)
 
-
-        // TODO We want to show album owner name
-        //observeUser()
     }
 
     // fetchujemo albume za odredjeni breed
@@ -68,12 +64,4 @@ class AlbumGridViewModel @Inject constructor(
         }
     }
 
-
-
-
-    // mapper
-//    private fun Album.asAlbumUiModel() = AlbumUiModel(
-//        id = this.albumId,
-//        coverPhotoUrl = this.imageUrl
-//    )
 }

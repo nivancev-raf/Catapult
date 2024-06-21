@@ -1,5 +1,9 @@
 package com.example.catapult.quiz.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -22,6 +26,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil.compose.rememberImagePainter
+import com.example.catapult.animations.AnimatedQuestionContent
 import com.example.catapult.breeds.list.BreedListContract
 import com.example.catapult.quiz.model.AnswerOption
 import com.example.catapult.quiz.model.Question
@@ -44,7 +49,9 @@ fun NavGraphBuilder.quiz(
     val state = quizViewModel.state.collectAsState()
 
 
-    if (state.value.questions.isEmpty()) {
+    if (state.value.updating){
+        CircularProgressIndicator()
+    }else if (state.value.questions.isEmpty()) {
         ResultScreen(
             ubp = state.value.ubp,
             onFinish = onClose,
@@ -76,7 +83,7 @@ fun QuizScreen(
     // if showdialog is true, show alert dialog
     if (state.showExitDialog) {
         AlertDialog(
-            onDismissRequest = { eventPublisher(QuizContract.QuizEvents.StopQuiz) },
+            onDismissRequest = { eventPublisher(QuizContract.QuizEvents.StopQuiz) }, // onDismissRequest is called when user clicks outside the dialog or presses the back button
             title = { Text("Exit Quiz") },
             text = { Text("Are you sure you want to exit the quiz?") },
             confirmButton = {
@@ -107,11 +114,19 @@ fun QuizScreen(
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },actions = {
-                    Text(
-                        text = "Time remaining: ${state.timeRemaining / 1000} sec",
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(end = 16.dp)
-                    )
+                    Column{
+                        Text(
+                            text = "Time remaining: ${state.timeRemaining / 1000} sec",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(end = 16.dp)
+                        )
+                        // add text current question index
+                        Text(
+                            text = "Question ${state.currentQuestionIndex + 1}/${state.questions.size}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(end = 16.dp)
+                        )
+                    }
                 }
             )
         },
@@ -128,7 +143,7 @@ fun QuizScreen(
                     val question = state.questions[state.currentQuestionIndex]
                     QuestionScreen(
                         question = question,
-                        onOptionSelected = onOptionSelected
+                        onOptionSelected = onOptionSelected,
                     )
                 } else {
                     onQuizCompleted()
@@ -139,60 +154,65 @@ fun QuizScreen(
     )
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun QuestionScreen(question: Question, onOptionSelected: (AnswerOption) -> Unit) {
     val quizViewModel: QuizViewModel = hiltViewModel()
     val state = quizViewModel.state.collectAsState().value
 
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(
-            text = question.questionText,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        if (question.imageUrl != null) {
-            Box(
-                modifier = Modifier
-                    .size(200.dp)
-                    .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
-            ) {
-                Image(
-                    painter = rememberImagePainter(question.imageUrl),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
+    AnimatedQuestionContent(targetState = state.currentQuestionIndex){
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            question.options.forEach { option ->
-                val buttonColor = when {
-                    state.selectedOption == null -> MaterialTheme.colorScheme.primary
-                    option == state.selectedOption && state.isOptionCorrect == true -> Color.Green
-                    option == state.selectedOption && state.isOptionCorrect == false -> Color.Red
-                    else -> MaterialTheme.colorScheme.primary
-                }
-                Button(
-                    onClick = { if (state.selectedOption == null) onOptionSelected(option) },
+            Text(
+                text = question.questionText,
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            if (question.imageUrl != null) {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp)
-                        .height(48.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
+                        .size(200.dp)
+                        .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
                 ) {
-                    Text(option.text)
+                    Image(
+                        painter = rememberImagePainter(question.imageUrl),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                question.options.forEach { option ->
+                    val buttonColor = when {
+                        state.selectedOption == null -> MaterialTheme.colorScheme.primary
+                        option == state.selectedOption && state.isOptionCorrect == true -> Color.Green
+                        option == state.selectedOption && state.isOptionCorrect == false -> Color.Red
+                        else -> MaterialTheme.colorScheme.primary
+                    }
+                    Button(
+                        onClick = { if (state.selectedOption == null) onOptionSelected(option) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp)
+                            .height(48.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
+                    ) {
+                        Text(option.text)
+                    }
                 }
             }
         }
+
     }
+
 }
 

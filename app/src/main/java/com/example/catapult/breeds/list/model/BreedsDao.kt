@@ -8,19 +8,12 @@ import androidx.room.Transaction
 import com.example.catapult.breeds.db.BreedData
 import kotlinx.coroutines.flow.Flow
 
-@Dao
+@Dao // Data Access Object
 interface BreedsDao {
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    // ABORT - When a conflict occurs, the existing rows are kept and the new rows are ignored
-    suspend fun insert(breedData: BreedData)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    // REPLACE - When a conflict occurs, the existing rows are deleted and the new rows are inserted
+    @Insert(onConflict = OnConflictStrategy.REPLACE)  // REPLACE - When a conflict occurs, the existing rows are deleted and the new rows are inserted
     suspend fun insertAll(list: List<BreedData>)
 
-    @Query("SELECT * FROM BreedData")
-    suspend fun getAll(): List<BreedData>
 
     @Query("SELECT * FROM BreedData")
     fun observeAllBreeds(): Flow<List<BreedData>> // flow je deo korutina i sluzi da se podaci emituju u realnom vremenu
@@ -40,7 +33,7 @@ interface BreedsDao {
 
     /*
     * objasnjenje za query:
-    * SELECT DISTINCT temperament FROM BreedData WHERE temperament NOT LIKE '%' || :temperament || '%' ORDER BY RANDOM() LIMIT 3
+    * SELECT DISTINCT temperament FROM BreedData WHERE temperament NOT LIKE '%' || :temperament || '%' ORDER BY RANDOM() LIMIT 2
     *
     * DISTINCT -> vraca samo unique vrednosti
     * temperament -> kolona iz koje uzimamo podatke

@@ -55,7 +55,7 @@ class LoginViewModel @Inject constructor(
                                 email = state.email
                             )
                             authStore.updateAuthData(newUserProfile)
-                            _uiState.value = _uiState.value.copy(isProfileCreated = true)
+//                            _uiState.value = _uiState.value.copy(isProfileCreated = true)
                         }
                     }
                 }

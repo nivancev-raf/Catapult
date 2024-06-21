@@ -46,11 +46,6 @@ fun NavGraphBuilder.photoGallery(
     val photoGalleryViewModel = hiltViewModel<PhotoGalleryViewModel>(navBackStackEntry)
     val state = photoGalleryViewModel.state.collectAsState()
 
-    // get album id from arguments
-
-
-
-
 
     PhotoGalleryScreen(
         state = state.value,
@@ -92,9 +87,7 @@ fun PhotoGalleryScreen(
         },
         content = { paddingValues ->
             if (state.photos.isNotEmpty()) {
-                // print the photos
-                Log.d("PhotoGalleryScreenIF", "Photos: ${state.photos.size}")
-//                Log.d("PhotoGalleryScreen", state.photos.toString())
+                // Print the photos for debugging
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = paddingValues,
@@ -108,7 +101,6 @@ fun PhotoGalleryScreen(
                     )
                 }
             } else {
-                Log.d("PhotoGalleryScreenELSE", "Photos: ${state.photos.size}")
                 Text(
                     modifier = Modifier.fillMaxSize(),
                     text = "No albums.",

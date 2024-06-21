@@ -10,7 +10,8 @@ import java.io.IOException
 import javax.inject.Inject
 
 
-// The object keyword is used to define a singleton class in Kotlin. A singleton is a class that can have only one instance.
+// The object keyword is used to define a singleton class in Kotlin.
+// A singleton is a class that can have only one instance.
 class BreedsRepository @Inject constructor(
     private val breedsApi: BreedsApi,
     private val database: AppDatabase
@@ -20,7 +21,7 @@ class BreedsRepository @Inject constructor(
 
 //    The use of the suspend keyword means that this function can be called from a coroutine
 //    and will suspend execution until the network call completes, without blocking the thread on which it's running.
-//
+
 
     suspend fun fetchAllBreeds() {
         val breeds = breedsApi.getAllBreeds()
@@ -34,7 +35,7 @@ class BreedsRepository @Inject constructor(
         database.breedsDao().insertAll(breedsWithImages.map { it.asBreedDbModel() })
     }
 
-    suspend fun getBreedImage(imageId: String?): PhotoApiModel? {
+    private suspend fun getBreedImage(imageId: String?): PhotoApiModel? {
         return imageId?.let { breedsApi.getBreedImage(it) }
     }
 
@@ -67,10 +68,5 @@ class BreedsRepository @Inject constructor(
     suspend fun getOneRandomTemperamentExcluding(excludedTemperaments: List<String>): String? {
         return database.breedsDao().getRandomTemperamentExcluding(excludedTemperaments)
     }
-
-    //
-
-
-
 
 }

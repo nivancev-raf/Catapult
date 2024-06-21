@@ -20,9 +20,10 @@ class Converters {
         return Gson().fromJson(value, type)
     }
 
+    // ? -> parametar moze biti null
     @TypeConverter
     fun fromTimestamp(value: Long?): Date? {
-        return value?.let { Date(it) }
+        return value?.let { Date(it) } // ako je value null, vrati null, inace vrati Date(it)
     }
 
     @TypeConverter
